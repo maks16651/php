@@ -1,6 +1,5 @@
 <?php
 
-
 Class  Base {
     private $link;                         //create a variable in which we will enter the connection to the database
 
@@ -22,7 +21,7 @@ Class  Base {
     }
     public function query($sql)
     {
-        $exe = $this->exetute($sql);
+        $exe = $this->execute($sql);
         $result=$exe->fetchAll(PDO::FETCH_ASSOC);
         if ($result === false) {
             return [];
@@ -32,30 +31,36 @@ Class  Base {
 
 }
 
+$firstname = $_POST['firstname']; //  receive data from the post request by their name parameter
+$lastname = $_POST['lastname'];
+$birthday = $_POST['birthday'];
+$subject = $_POST['subject'];
+$country = $_POST['country'];
+$mail = $_POST['mail'];
+$phone=$_POST['phone'];
 
-if (isset($_POST['send'])) {
-    $firstname = $_POST['first_name']; //  receive data from the post request by their name parameter
-    $lastname = $_POST['last_name'];
-    $birthday = $_POST['birthday'];
-    $subject = $_POST['subject'];
-    $country = $_POST['country'];
-    $phone = $_POST['phone'];
-    $mail = $_POST['mail'];
+if($firstname&&$lastname&&$birthday&&$subject&&$country) {
     $db = new Base();
-    $db->execute("INSERT INTO users(first_name,last_name,birthday,subject,country,phone,email) VALUES ('$firstname','$lastname','$birthday','$subject','$country','$phone','$mail')");
+    $db->execute("INSERT INTO users(first_name,last_name,birthday,subject,country) VALUES ('$firstname','$lastname','$birthday','$subject','$country')");
+}
+
+if($mail&&$firstname) {
+    $db = new Base();
+    $db->execute("UPDATE users 
+    SET email= '$mail', phone='$phone'
+    WHERE first_name = '$firstname'");
 }
 
 
-if (isset($_POST['send2'])) {
-    $firstname = $_POST['first_name'];
-    $company = $_POST['company'];
-    $position = $_POST['position'];
-    $about = $_POST['about'];
-    $phototmp = $_FILES['photo']['tmp_name'];
-    $photoname = $_FILES['photo']['name'];
-    $path = "Downloads/";
-    $filedir = $path.$photoname;
-    $db = new Base();
-    $db->execute("INSERT INTO users(company,pozition,about,photo) VALUES ('$company','$position' ,'$about','$path') WHERE first_name='$firstname'");
-}
+
+
+
+
+
+
+
+
+
+
+
 
