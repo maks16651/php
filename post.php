@@ -1,5 +1,6 @@
 <?php
 
+
 Class  Base {
     private $link;                         //create a variable in which we will enter the connection to the database
 
@@ -21,8 +22,9 @@ Class  Base {
     }
     public function query($sql)
     {
-        $exe = $this->execute($sql);
-        $result=$exe->fetchAll(PDO::FETCH_ASSOC);
+        $sth = $this->link->prepare($sql);
+        $sth->execute();
+        $result=$sth->fetchAll(PDO::FETCH_ASSOC);
         if ($result === false) {
             return [];
         }
@@ -31,6 +33,10 @@ Class  Base {
 
 }
 
+$db = new Base();
+$users = $db->query("SELECT * FROM users");
+require("members.php");
+
 $firstname = $_POST['firstname']; //  receive data from the post request by their name parameter
 $lastname = $_POST['lastname'];
 $birthday = $_POST['birthday'];
@@ -38,29 +44,21 @@ $subject = $_POST['subject'];
 $country = $_POST['country'];
 $mail = $_POST['mail'];
 $phone=$_POST['phone'];
+$company=$_POST['company'];
+$position=$_POST['position'];
+$about=$_POST['about'];
 
-if($firstname&&$lastname&&$birthday&&$subject&&$country) {
+
+if($firstname&&$lastname&&$birthday&&$subject&&$country&&$mail&&$phone) {
     $db = new Base();
-    $db->execute("INSERT INTO users(first_name,last_name,birthday,subject,country) VALUES ('$firstname','$lastname','$birthday','$subject','$country')");
+    $db->execute("INSERT INTO users(first_name,last_name,birthday,subject,country,email,phone) VALUES ('$firstname','$lastname','$birthday','$subject','$country','$mail','$phone')");
 }
 
-if($mail&&$firstname) {
+if($firstname&&$company&&$position&&$about) {
     $db = new Base();
-    $db->execute("UPDATE users 
-    SET email= '$mail', phone='$phone'
+    $db->execute("UPDATE users
+    SET company= '$company', position='$position', about='$about'
     WHERE first_name = '$firstname'");
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
